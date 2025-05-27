@@ -1,7 +1,5 @@
 package com.cryptotracker.dto;
 
-import com.cryptotracker.entity.Role;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,13 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponseDTO {
+public class UserAuthDTO // used in login API endpoint , prevents data exposure
+{
 	
-	private long id;
-	private String name;
 	private String email;
-	private Role role;
-	
-	//no password field  to keep it safe
+	private String password;
 
 }
