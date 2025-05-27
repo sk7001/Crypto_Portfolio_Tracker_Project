@@ -18,7 +18,8 @@ public class PortfolioLossAlert {
 	private Long userId;
 	private double lossThresholdpercent;
 	private String status = "PENDING";
-	private LocalDateTime triggeredAt;
+	private LocalDateTime triggeredAt;      
+	
 				
 	
 
