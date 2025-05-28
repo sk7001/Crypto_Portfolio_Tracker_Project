@@ -1,4 +1,4 @@
-package com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto;
+package com.cryptotracker.CryptoTrackerApplication.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

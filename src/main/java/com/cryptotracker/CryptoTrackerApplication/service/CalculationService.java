@@ -1,6 +1,6 @@
 package com.cryptotracker.CryptoTrackerApplication.service;
 
-import com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto.HoldingResponseDTO;
+import com.cryptotracker.CryptoTrackerApplication.dto.HoldingResponseDTO;
 import com.cryptotracker.CryptoTrackerApplication.repository.HoldingRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.PriceRepository;
 import com.cryptotracker.model.CryptoHolding;

@@ -1,9 +1,9 @@
 package com.cryptotracker.CryptoTrackerApplication.controller;
 
-import com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto.UserAuthDTO;
-import com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto.UserRequestDTO;
-import com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto.UserResponseDTO;
 import com.cryptotracker.CryptoTrackerApplication.Mappers.UserMapper;
+import com.cryptotracker.CryptoTrackerApplication.dto.UserAuthDTO;
+import com.cryptotracker.CryptoTrackerApplication.dto.UserRequestDTO;
+import com.cryptotracker.CryptoTrackerApplication.dto.UserResponseDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.Role;
 import com.cryptotracker.CryptoTrackerApplication.service.UserService;
 

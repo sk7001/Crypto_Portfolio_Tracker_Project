@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto.AlertsDTO;
+import com.cryptotracker.CryptoTrackerApplication.dto.AlertsDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.Alerts;
 import com.cryptotracker.CryptoTrackerApplication.entity.AlertsStatus;
 import com.cryptotracker.CryptoTrackerApplication.repository.AlertsRepository;

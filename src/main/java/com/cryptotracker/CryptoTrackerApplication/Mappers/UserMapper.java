@@ -1,7 +1,7 @@
 package com.cryptotracker.CryptoTrackerApplication.Mappers;
 
-import com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto.UserRequestDTO;
-import com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto.UserResponseDTO;
+import com.cryptotracker.CryptoTrackerApplication.dto.UserRequestDTO;
+import com.cryptotracker.CryptoTrackerApplication.dto.UserResponseDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.User;
 
 public class UserMapper {

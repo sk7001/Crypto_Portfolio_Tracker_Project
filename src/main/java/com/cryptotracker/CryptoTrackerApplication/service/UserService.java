@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto.UserAuthDTO;
-import com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto.UserRequestDTO;
-import com.cryptotracker.CryptoTrackerApplication.CryptoTrackerApplication.dto.UserResponseDTO;
 import com.cryptotracker.CryptoTrackerApplication.Mappers.UserMapper;
+import com.cryptotracker.CryptoTrackerApplication.dto.UserAuthDTO;
+import com.cryptotracker.CryptoTrackerApplication.dto.UserRequestDTO;
+import com.cryptotracker.CryptoTrackerApplication.dto.UserResponseDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.Role;
 import com.cryptotracker.CryptoTrackerApplication.entity.User;
 import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
