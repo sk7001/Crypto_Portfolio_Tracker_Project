@@ -1,13 +1,19 @@
 package com.cryptotracker.CryptoTrackerApplication.service;
 
 
+import com.cryptotracker.CryptoTrackerApplication.dto.CryptoDTO;
+import com.cryptotracker.CryptoTrackerApplication.entity.CryptoHolding;
+
 import java.util.List;
 
-import com.cryptotracker.CryptoTrackerApplication.dto.CryptoHoldingRequest;
-import com.cryptotracker.CryptoTrackerApplication.dto.CryptoHoldingResponse;
 
 public interface CryptoHoldingService {
-    CryptoHoldingResponse addCryptoHolding(Long userId, CryptoHoldingRequest request);
-    List<CryptoHoldingResponse> getHoldingsByUser(Long userId);
+	CryptoHolding addCryptoHolding(CryptoDTO dto);
+    List<CryptoHolding> getCryptoHoldingsByUserId(Long userId); // Make sure this is included
+    CryptoHolding getCryptoHoldingById(Long holdingId);
+    CryptoHolding updateCryptoHolding(Long holdingId, CryptoDTO dto);
+    void deleteCryptoHolding(Long holdingId);
+    List<CryptoHolding> getAllCryptoHoldings();
+
 }
 

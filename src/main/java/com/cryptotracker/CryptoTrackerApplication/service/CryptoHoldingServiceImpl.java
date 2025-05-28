@@ -1,63 +1,69 @@
 package com.cryptotracker.CryptoTrackerApplication.service;
 
-import com.cryptotracker.CryptoTrackerApplication.dto.CryptoHoldingRequest;
-import com.cryptotracker.CryptoTrackerApplication.dto.CryptoHoldingResponse;
+import com.cryptotracker.CryptoTrackerApplication.dto.CryptoDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.CryptoHolding;
-import com.cryptotracker.CryptoTrackerApplication.entity.User;
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoHoldingRepository;
-import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CryptoHoldingServiceImpl implements CryptoHoldingService {
 
     @Autowired
-    private CryptoHoldingRepository holdingRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private CryptoHoldingRepository repository;
 
     @Override
-    public CryptoHoldingResponse addCryptoHolding(Long userId, CryptoHoldingRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+    public CryptoHolding addCryptoHolding(CryptoDTO dto) {
+        CryptoHolding holding = new CryptoHolding(
+            null,
+            dto.getUserId(),
+            dto.getCoinName(),
+            dto.getSymbol(),
+            dto.getQuantityHeld(),
+            dto.getBuyPrice(),
+            dto.getBuyDate()
+        );
+        return repository.save(holding);
+    }
 
-        CryptoHolding holding = CryptoHolding.builder()
-                .user(user)
-                .coinName(request.getCoinName())
-                .symbol(request.getSymbol())
-                .quantityHeld(request.getQuantityHeld())
-                .buyPrice(request.getBuyPrice())
-                .buyDate(request.getBuyDate())
-                .build();
 
-        CryptoHolding saved = holdingRepository.save(holding);
-
-        return mapToResponse(saved);
+    @Override
+    public List<CryptoHolding> getCryptoHoldingsByUserId(Long userId) {
+        return repository.findByUserId(userId);
     }
 
     @Override
-    public List<CryptoHoldingResponse> getHoldingsByUser(Long userId) {
-        return holdingRepository.findByUserId(userId).stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public CryptoHolding getCryptoHoldingById(Long holdingId) {
+        return repository.findById(holdingId)
+                .orElseThrow(() -> new RuntimeException("Crypto holding not found with ID: " + holdingId));
     }
 
-    private CryptoHoldingResponse mapToResponse(CryptoHolding holding) {
-        return CryptoHoldingResponse.builder()
-                .id(holding.getId())
-                .userId(holding.getUser().getId())
-                .coinName(holding.getCoinName())
-                .symbol(holding.getSymbol())
-                .quantityHeld(holding.getQuantityHeld())
-                .buyPrice(holding.getBuyPrice())
-                .buyDate(holding.getBuyDate())
-                .build();
+    @Override
+    public CryptoHolding updateCryptoHolding(Long holdingId, CryptoDTO dto) {
+        CryptoHolding holding = getCryptoHoldingById(holdingId);
+        // NOTE: Do NOT update userId here
+        holding.setCoinName(dto.getCoinName());
+        holding.setSymbol(dto.getSymbol());
+        holding.setQuantityHeld(dto.getQuantityHeld());
+        holding.setBuyPrice(dto.getBuyPrice());
+        holding.setBuyDate(dto.getBuyDate());
+        return repository.save(holding);
     }
+
+    @Override
+    public List<CryptoHolding> getAllCryptoHoldings() {
+        return repository.findAll();
+    }
+
+    @Override
+    public void deleteCryptoHolding(Long holdingId) {
+        if (!repository.existsById(holdingId)) {
+            throw new RuntimeException("Cannot delete. Crypto holding not found with ID: " + holdingId);
+        }
+        repository.deleteById(holdingId);
+    }
+    
+    
 }
-
