@@ -1,7 +1,6 @@
-package com.cryptotracker.CryptoTrackerApplication.dto;
+package com.cryptotracker.dto;
 
-import com.cryptotracker.CryptoTrackerApplication.entity.AlertsDirection;
-
+import com.cryptotracker.entity.AlertsDirection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AlertsDTO {
-	private Long userId;
-	private String symbol;
-	private Double triggerPrice;
-	private AlertsDirection direction;
+    private Long userId;
+    private String symbol;
+    private Double triggerPrice;
+    private AlertsDirection direction;
 }
+
 
 // I have created the Alerts DTO for Alerts that we can receive or send through APIs.
