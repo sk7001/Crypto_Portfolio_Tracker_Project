@@ -1,58 +1,26 @@
 package com.cryptotracker.CryptoTrackerApplication.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
 
-//Entity representing the profit and loss record for a user or transaction
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "profit_and_loss")
 public class ProfitAndLoss {
 
- // Primary key, auto-generated for each profit and loss entry
- @Id
- @GeneratedValue(strategy = GenerationType.IDENTITY)
- private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
- // Amount of profit associated with this record
- private Double profit;
+    // Foreign key to User
+    private Long userId;
 
- // Amount of loss associated with this record
- private Double loss;
+    // Enum status (PROFIT, LOSS, NEUTRAL)
+    @Enumerated(EnumType.STRING)
+    private PriceStatus priceStatus;
 
- // Default constructor required by JPA
- public ProfitAndLoss() {}
-
- // Constructor to initialize profit and loss fields
- public ProfitAndLoss(Double profit, Double loss) {
-     this.profit = profit;
-     this.loss = loss;
- }
-
- // Getter for unique identifier of this record
- public Long getId() {
-     return id;
- }
-
- // Getter for profit amount
- public Double getProfit() {
-     return profit;
- }
-
- // Setter for profit amount
- public void setProfit(Double profit) {
-     this.profit = profit;
- }
-
- // Getter for loss amount
- public Double getLoss() {
-     return loss;
- }
-
- // Setter for loss amount
- public void setLoss(Double loss) {
-     this.loss = loss;
-}
+    // Store the total portfolio profit or loss value
+    private Double totalPortfolio;
 }

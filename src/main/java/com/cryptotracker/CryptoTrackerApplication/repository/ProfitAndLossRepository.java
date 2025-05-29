@@ -2,8 +2,9 @@ package com.cryptotracker.CryptoTrackerApplication.repository;
 
 import com.cryptotracker.CryptoTrackerApplication.entity.ProfitAndLoss;
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-// Repository interface for accessing ProfitAndLoss entities from the database
+// Repository to access profit_and_loss table
 public interface ProfitAndLossRepository extends JpaRepository<ProfitAndLoss, Long> {
-    // Inherits basic CRUD and query operations from JpaRepository
+    Optional<ProfitAndLoss> findByUserId(Long userId);
 }
