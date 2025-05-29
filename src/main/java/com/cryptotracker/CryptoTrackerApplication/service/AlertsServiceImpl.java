@@ -111,7 +111,7 @@ public class AlertsServiceImpl implements AlertsService {
             String subject = "Crypto Alert Triggered!";
             String body = "Your alert for " + alert.getSymbol() + " at price " + alert.getTriggerPrice() + " has been triggered.";
             emailService.sendEmail(email, subject, body);
-            logger.debug("Email sent to user {} with userID {}", user.getName(), user.getUser_id());
+            logger.debug("Email sent to user {} with userID {}", user.getName(), user.getUserId());
         }
     }
 

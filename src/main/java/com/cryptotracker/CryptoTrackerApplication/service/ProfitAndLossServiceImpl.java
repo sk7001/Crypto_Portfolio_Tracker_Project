@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProfitAndLossServiceImpl implements ProfitAndLossService {
@@ -30,7 +29,7 @@ public class ProfitAndLossServiceImpl implements ProfitAndLossService {
     }
 
     // Calculate/save PnL for a user
-    public ProfitAndLossResponse calculateAndPersist(Long userId) {
+    public ProfitAndLossResponseDTO calculateAndPersist(Long userId) {
         List<CryptoHolding> holdings = holdingRepo.findByUserId(userId);
 
         double totalInvested = 0.0;
@@ -63,17 +62,17 @@ public class ProfitAndLossServiceImpl implements ProfitAndLossService {
         entity.setPriceStatus(status);
         pnlRepo.save(entity);
 
-        return new ProfitAndLossResponse(userId, totalInvested, totalCurrentValue, profitLoss, status);
+        return new ProfitAndLossResponseDTO(userId, totalInvested, totalCurrentValue, profitLoss, status);
     }
 
     // Get latest record for user
-    public ProfitAndLossResponse getLatest(Long userId) {
+    public ProfitAndLossResponseDTO getLatest(Long userId) {
         List<ProfitAndLoss> records = pnlRepo.findByUserId(userId);
         if (records.isEmpty()) {
             return null;
         }
         ProfitAndLoss latest = records.get(0);
-        return new ProfitAndLossResponse(
+        return new ProfitAndLossResponseDTO(
             latest.getUserId(),
             null,  // These would need to be stored if required
             null, 

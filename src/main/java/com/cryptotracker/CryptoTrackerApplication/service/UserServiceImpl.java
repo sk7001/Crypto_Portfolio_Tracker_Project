@@ -4,7 +4,6 @@ package com.cryptotracker.CryptoTrackerApplication.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cryptotracker.CryptoTrackerApplication.service.UserServiceInterface;
 import com.cryptotracker.CryptoTrackerApplication.Mappers.UserMapper;
 import com.cryptotracker.CryptoTrackerApplication.dto.UserDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.Role;

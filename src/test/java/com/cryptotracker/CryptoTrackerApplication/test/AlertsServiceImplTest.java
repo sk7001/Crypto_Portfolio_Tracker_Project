@@ -2,7 +2,7 @@ package com.cryptotracker.CryptoTrackerApplication.test;
 
 import com.cryptotracker.CryptoTrackerApplication.dto.AlertsDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.*;
-import com.cryptotracker.CryptoTrackerApplication.AlertsRepository;
+import com.cryptotracker.CryptoTrackerApplication.repository.AlertsRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoPriceRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
 import com.cryptotracker.CryptoTrackerApplication.service.AlertsServiceImpl;
@@ -44,7 +44,7 @@ public class AlertsServiceImplTest {
         alert.setStatus(AlertsStatus.PENDING);
         alert.setId(1L);
         user = new User();
-        user.setUser_id(1L);
+        user.setUserId(1L);
         user.setEmail("test@example.com");
     }
 
