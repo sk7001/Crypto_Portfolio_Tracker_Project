@@ -43,7 +43,7 @@ public class AlertsController {
     public ResponseEntity<?> getAlerts(@PathVariable Long id) {
         try {
         	User user = userRepository.findById(id).orElseThrow(()->new Exception("User not found"));
-            List<Alerts> alertsList = alertsService.getAlerts(user.getUser_id());
+            List<Alerts> alertsList = alertsService.getAlerts(user.getUserId());
             return ResponseEntity.ok(alertsList);
         } catch (Exception e) {
             logger.error("Error fetching alerts for user {}: ", id);
