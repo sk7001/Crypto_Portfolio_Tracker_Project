@@ -7,6 +7,7 @@ import com.cryptotracker.CryptoTrackerApplication.service.UserAuthServiceInterfa
 import com.cryptotracker.CryptoTrackerApplication.dto.UserAuthDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.Role;
 import com.cryptotracker.CryptoTrackerApplication.entity.User;
+import com.cryptotracker.CryptoTrackerApplication.exception.EmailAlreadyExistsException;
 import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
 import com.cryptotracker.CryptoTrackerApplication.util.PasswordEncoderUtility;
 
@@ -24,7 +25,7 @@ public class UserAuthServiceImpl implements UserAuthServiceInterface{
 	//register the user and store encoded password in DB
 	public UserAuthDTO registerUser(User user) {
 		if(userRepo.existsByEmail(user.getEmail())) {
-			throw  new RuntimeException("User already exists");
+			throw new EmailAlreadyExistsException("User already exists with email: " + user.getEmail());
 		}else {
 			User u = new User();
 			u.setEmail(user.getEmail());

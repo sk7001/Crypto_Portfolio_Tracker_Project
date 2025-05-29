@@ -7,12 +7,11 @@ import lombok.*;
 @NoArgsConstructor
 
 public class CryptoDTO {
-    private Long holdingId; 
+	private Long holdingId; 
     private Long userId;
     private String coinName;
     private String symbol;
     private Double quantityHeld;
-    private Double buyPrice;
-    private String buyDate; 
+    private String buyDate;
 }
 

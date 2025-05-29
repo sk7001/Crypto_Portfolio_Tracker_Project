@@ -8,4 +8,5 @@ public class DuplicateAlertException extends RuntimeException {
 /*
 this class deals with the alerts which are already created by post method and are stored in database,
  then when the user tries to post the same alert again this exception will be called.
+ this is used in AlertsServiceImpl
 */

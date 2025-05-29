@@ -7,4 +7,5 @@ public class EmailAlreadyExistsException extends RuntimeException{
 }
 /*
 this exception is thrown when the user registers with the same email again which is already registered with the database 
+this exception is used in UserAuthServiceImpl.
 */

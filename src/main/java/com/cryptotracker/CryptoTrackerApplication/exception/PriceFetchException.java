@@ -6,4 +6,5 @@ public class PriceFetchException extends RuntimeException {
     }
 }
 /* this exception handles when there is no price generated for the price field
+ * used in CryptoHoldingServiceImpl in updateCryptoHolding
 */

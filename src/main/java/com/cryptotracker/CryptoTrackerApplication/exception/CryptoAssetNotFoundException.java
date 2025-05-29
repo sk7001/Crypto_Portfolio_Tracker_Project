@@ -7,5 +7,6 @@ public class CryptoAssetNotFoundException extends RuntimeException {
     }
 }
 /*
-this class deals with the assets which are not created by post method and is not in the database already
+this class deals with the assets which are not created by post method and is not in the database already.
+implemented in cryptopriceserviceimpl for get method and cryptoholdingserviceimpl.
 */

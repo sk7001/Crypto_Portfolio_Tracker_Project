@@ -1,6 +1,7 @@
 package com.cryptotracker.CryptoTrackerApplication.service;
 
 import com.cryptotracker.CryptoTrackerApplication.entity.CryptoPrice;
+import com.cryptotracker.CryptoTrackerApplication.exception.CryptoAssetNotFoundException;
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoPriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -56,7 +57,7 @@ public class CryptoPriceServiceImpl implements CryptoPriceService {
 
     public CryptoPrice getPrice(String symbol) {
         logger.info("Fetching price for symbol: {}", symbol);
-        return priceRepo.findById(symbol.toUpperCase()).orElse(null);
+        return priceRepo.findById(symbol.toUpperCase()).orElseThrow(() -> new CryptoAssetNotFoundException("Crypto asset not found: " + symbol));
     }
 }
 

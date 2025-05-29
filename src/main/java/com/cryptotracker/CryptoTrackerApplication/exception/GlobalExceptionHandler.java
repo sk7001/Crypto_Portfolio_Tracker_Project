@@ -21,11 +21,6 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(InvalidInputException.class)
-    public ResponseEntity<?> handleInvalidInput(InvalidInputException ex) {
-        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(CryptoAssetNotFoundException.class)
     public ResponseEntity<?> handleAssetNotFound(CryptoAssetNotFoundException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);

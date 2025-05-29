@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.cryptotracker.CryptoTrackerApplication.entity.CryptoPrice;
 import com.cryptotracker.CryptoTrackerApplication.entity.User;
+import com.cryptotracker.CryptoTrackerApplication.exception.DuplicateAlertException;
 import com.cryptotracker.CryptoTrackerApplication.repository.AlertsRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoPriceRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
@@ -40,11 +41,20 @@ public class AlertsServiceImpl implements AlertsService {
     @Override
     public Alerts addAlert(AlertsDTO dto) {
         // Creates a new alert using data from the DTO and saves it to the database.
-        Alerts alert = new Alerts(dto.getUserId(), dto.getSymbol(), dto.getTriggerPrice(), dto.getDirection());
-        logger.debug("Alert Created: {}", alert.getId());
-        return alertRepository.save(alert);
-    }
+    	try {
+    	    Optional<Alerts> existingAlert = alertRepository.findByUserIdAndSymbolAndTriggerPriceAndDirection(dto.getUserId(), dto.getSymbol(), dto.getTriggerPrice(), dto.getDirection());
+    	    if (existingAlert.isPresent()) {
+    	        throw new DuplicateAlertException("Alert already exists");
+    	    }
+    	    Alerts alert = new Alerts(dto.getUserId(), dto.getSymbol(), dto.getTriggerPrice(), dto.getDirection());
+    	    logger.debug("Alert Created: {}", alert.getId());
+    	    return alertRepository.save(alert);
+    	} catch (DuplicateAlertException e) {
+    	    logger.debug("Error occurred: {}", e.getMessage());
+    	    throw e;
+    	}
 
+    }
     @Override
     public List<Alerts> getAlerts(Long userID) {
         // Fetches and returns all alerts for a specific user by userID.

@@ -10,7 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CryptoPriceRepository extends JpaRepository<CryptoPrice, String> {
 	Optional<CryptoPrice> findBySymbol(String symbol);
+	CryptoPrice findBySymbol1(String symbol);
 }
-
-//This interface allows us to perform database operations like save,file,delete
-//It extends JpaRepository to inherit in-built CRUD Operations

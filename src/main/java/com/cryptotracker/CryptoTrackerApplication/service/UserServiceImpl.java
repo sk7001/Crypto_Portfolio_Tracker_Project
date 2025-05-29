@@ -8,6 +8,7 @@ import com.cryptotracker.CryptoTrackerApplication.Mappers.UserMapper;
 import com.cryptotracker.CryptoTrackerApplication.dto.UserDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.Role;
 import com.cryptotracker.CryptoTrackerApplication.entity.User;
+import com.cryptotracker.CryptoTrackerApplication.exception.UserNotFoundException;
 import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
 
 import java.util.List;
@@ -64,7 +65,7 @@ public class UserServiceImpl implements UserServiceInterface {
     		
     	
     	}    	
-    		catch(Exception e) {
+    		catch(UserNotFoundException e) {
     			System.out.println("Error while deleting: "+e.getMessage());
     			
     		}
