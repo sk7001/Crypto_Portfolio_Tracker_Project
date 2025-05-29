@@ -1,70 +1,55 @@
 package com.cryptotracker.CryptoTrackerApplication.controller;
-
-import com.cryptotracker.CryptoTrackerApplication.Mappers.UserMapper;
-import com.cryptotracker.CryptoTrackerApplication.dto.UserAuthDTO;
-import com.cryptotracker.CryptoTrackerApplication.dto.UserRequestDTO;
-import com.cryptotracker.CryptoTrackerApplication.dto.UserResponseDTO;
-import com.cryptotracker.CryptoTrackerApplication.entity.Role;
-import com.cryptotracker.CryptoTrackerApplication.service.UserService;
-
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
+
+import com.cryptotracker.CryptoTrackerApplication.dto.UserDTO;
+import com.cryptotracker.CryptoTrackerApplication.service.UserService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("api/users")
+@Validated
 public class UserController {
     @Autowired
-    private  UserService userService;
-
-    // Create new user
-    @PostMapping("/register")
-    @PreAuthorize("hasRole('ADMIN')")
-    public UserResponseDTO createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-        return userService.createUser(userRequestDTO);
+    private UserService service;
+    
+    //This method is for fetching all the users from the user database
+	@GetMapping 
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
+        return ResponseEntity.ok(service.getAllUser());
     }
-
-    // Get all users
-    @GetMapping("/getallusers")
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<UserResponseDTO> getAllUsers() {
-        return userService.getAllUsers();
+	
+	//Here we are checking for the values for validation, the method also validates the attributes below
+     //  api/users/1/role/reqPerson?role=ADMIN&reqPerson=adminemail
+    @PutMapping("/{id}/role/reqPerson")
+    public ResponseEntity<String> updateUserRole(
+    		@PathVariable Long id,
+    		@RequestParam @NotBlank(message="role cannot be blank") String role,
+    		@RequestParam @NotBlank(message="requesting person's email cannot be blank")
+    				      @Email(message="email should be valid") String reqPerson){
+        
+    	if(service.updateUserRole(reqPerson,id,role)) {
+    		 return ResponseEntity.ok("User role updated successfully");
+    	}else {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Role update failed");
+    	}       
+    }      
+    
+    @DeleteMapping("/delete/{id}/reqPerson")
+    public ResponseEntity<String> deleteUser(
+    		@PathVariable Long id,
+    		@RequestParam @NotBlank(message="email should be valid") String reqPerson){
+    	if(service.deleteUser(reqPerson,id)) {
+    		return ResponseEntity.ok("User deleted successfully");
+    	}else {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    	}
     }
     
-    //login
-    @PostMapping("/login")
-    @PreAuthorize("permitAll()")
-    public UserResponseDTO login(@RequestBody UserAuthDTO authDTO) {
-        return userService.login(authDTO);
-    }
-
-    // Get user by email
-    @GetMapping("/email")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public UserResponseDTO getUserByEmail(@RequestParam String email) {
-        return UserMapper.EntityTodto(userService.getbyEmail(email));
-    }
-
-    //  Update only role
-    @PutMapping("/{id}/role")
-    @PreAuthorize("hasRole('ADMIN')")
-    public UserResponseDTO updateUserRole(@PathVariable Long id, @RequestParam Role role) {
-        return userService.updateUserRole(id, role);
-    }
-
-
-    // ✅ Delete user
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-       
-    }
 }
-

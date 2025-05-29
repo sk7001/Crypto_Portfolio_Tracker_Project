@@ -1,81 +1,69 @@
 package com.cryptotracker.CryptoTrackerApplication.service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cryptotracker.CryptoTrackerApplication.Mappers.UserMapper;
-import com.cryptotracker.CryptoTrackerApplication.dto.UserAuthDTO;
-import com.cryptotracker.CryptoTrackerApplication.dto.UserRequestDTO;
-import com.cryptotracker.CryptoTrackerApplication.dto.UserResponseDTO;
+import com.cryptotracker.CryptoTrackerApplication.dto.UserDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.Role;
 import com.cryptotracker.CryptoTrackerApplication.entity.User;
 import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 public class UserService {
 	@Autowired
-	private static UserRepository repo;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+    private  UserRepository userRepository;
 	
-	//get all users
-	public List<UserResponseDTO> getAllUsers()
-	{
-		return repo
-				.findAll()
-				.stream()
-				.map(UserMapper::EntityTodto)
-				.collect(Collectors.toList());
+	// the method  returns all the users ,or else if the role is not Admin ,then the method throws exception
+	public  List<UserDTO> getAllUser(){
+		
+		return userRepository.findAll().stream()
+                .map(UserMapper::userToDto)
+                .collect(Collectors.toList());			
 	}
 	
-	//create new user
-    public UserResponseDTO createUser(UserRequestDTO userRequestDTO)
-    {
-	    User user = UserMapper.dtoToEntity(userRequestDTO);
-	    user.setPassword(passwordEncoder.encode(user.getPassword()));  // Encrypt password
-	    User savedUser = repo.save(user);
-	    return UserMapper.EntityTodto(savedUser);
-	}
+	//This method finds the user by userId, if found checks if the role is Admin,if Admin ,then updates the user role and if user is not Admin ,then the method throws exceptions
+	 public boolean updateUserRole(String reqPersonMail,Long userId, String role){
+	    	try {
+	        User u=userRepository.findByEmail(reqPersonMail).orElseThrow();
+	        User user = userRepository.findById(userId).orElseThrow();
+	        if(u.getRole() == Role.ADMIN) {
+	        	user.setRole(Role.valueOf(role.toUpperCase()));
+	            userRepository.save(u);
+	            return true;
+	        }
+	    	}
+	        catch(Exception e) {
+	        	System.out.println("Error while updating user role: " + e.getMessage());
+	        }
+	        return false;
+	    }
     
-    //login
-    public UserResponseDTO login(UserAuthDTO authDTO)
-    {
-        User user = repo.findByEmail(authDTO.getEmail()).orElseThrow();
-
-        if (!passwordEncoder.matches(authDTO.getPassword(), user.getPassword()))
-        {
-            throw new RuntimeException("Invalid email or password");
-        }
-
-        return UserMapper.EntityTodto(user);
+    //Deletes the user only when the role is Admin 
+    public boolean deleteUser(String reqPersonMail,Long userid) {
+    	try {
+    		User u=userRepository.findByEmail(reqPersonMail).orElseThrow();
+    		
+    		if(u.getRole() == Role.ADMIN) {
+    			userRepository.deleteById(userid);
+        		return true;
+    		}
+    		
+    	
+    	}    	
+    		catch(Exception e) {
+    			System.out.println("Error while deleting: "+e.getMessage());
+    			
+    		}
+    	return false;
     }
-
-
-	
-	//get user by email
-	public User getbyEmail(String email)
-	{
-	    return repo.findByEmail(email).get();
-	}
-	
-	//update the role of user
-	public UserResponseDTO updateUserRole(Long userId, Role newRole)
-	{
-		    User user = repo.findById(userId).orElseThrow();
-		    user.setRole(newRole);
-		    User updatedUser = repo.save(user);
-		    return UserMapper.EntityTodto(updatedUser);
-	}
-
-	//delete the user
-	public void deleteUser(Long id)
-	{
-        User user = repo.findById(id).orElseThrow();
-        repo.delete(user);
-	}
+    
+    //Finds the user by user email
+    public User getbyEmail(String email){
+        return userRepository.findByEmail(email).orElse(null);
+    }
+    
 }
