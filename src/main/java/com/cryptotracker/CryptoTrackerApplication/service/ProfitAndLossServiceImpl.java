@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProfitAndLossServiceImpl {
+public class ProfitAndLossServiceImpl implements ProfitAndLossService {
 
     @Autowired
     private CryptoHoldingRepository holdingRepo;
@@ -20,7 +20,7 @@ public class ProfitAndLossServiceImpl {
     @Autowired
     private ProfitAndLossRepository pnlRepo;
 
-    // Scheduled batch update for all users (no-arg, Spring-compliant)
+    // Scheduled batch update for all users
     @Scheduled(fixedRate = 60000)
     public void calculateAndPersistAll() {
         List<Long> userIds = holdingRepo.findAllDistinctUserIds();
@@ -29,8 +29,8 @@ public class ProfitAndLossServiceImpl {
         }
     }
 
-    // Calculate/save PnL for a user (API use/manual call)
-    public ProfitAndLossResponseDTO calculateAndPersist(Long userId) {
+    // Calculate/save PnL for a user
+    public ProfitAndLossResponse calculateAndPersist(Long userId) {
         List<CryptoHolding> holdings = holdingRepo.findByUserId(userId);
 
         double totalInvested = 0.0;
@@ -43,36 +43,42 @@ public class ProfitAndLossServiceImpl {
 
             totalInvested += qty * buyPrice;
 
-            double currentPrice = priceRepo.findById(symbol)
-                    .map(CryptoPrice::getPrice)
-                    .orElse(0.0);
+            CryptoPrice price = priceRepo.findById(symbol).orElse(null);
+            double currentPrice = (price != null) ? price.getPrice() : 0.0;
             totalCurrentValue += qty * currentPrice;
         }
+
         double profitLoss = totalCurrentValue - totalInvested;
+        PriceStatus status = (profitLoss > 0) ? PriceStatus.PROFIT 
+                            : (profitLoss < 0 ? PriceStatus.LOSS : PriceStatus.NEUTRAL);
 
-        PriceStatus status = (profitLoss > 0) ? PriceStatus.PROFIT : (profitLoss < 0 ? PriceStatus.LOSS : PriceStatus.NEUTRAL);
+        // Get existing or create new entity
+        List<ProfitAndLoss> existingRecords = pnlRepo.findByUserId(userId);
+        ProfitAndLoss entity = existingRecords.isEmpty() ? 
+                            new ProfitAndLoss() : 
+                            existingRecords.get(0);
 
-        // Save/update entity
-        Optional<ProfitAndLoss> opt = pnlRepo.findByUserId(userId);
-        ProfitAndLoss entity = opt.orElseGet(ProfitAndLoss::new);
         entity.setUserId(userId);
-        entity.setTotalPortfolio(profitLoss);   // field name assumed corrected in entity
-        entity.setPriceStatus(status);          // field name assumed corrected in entity
-
+        entity.setTotalPortfolio(profitLoss);
+        entity.setPriceStatus(status);
         pnlRepo.save(entity);
 
-        return new ProfitAndLossResponseDTO(userId, totalInvested, totalCurrentValue, profitLoss, status);
+        return new ProfitAndLossResponse(userId, totalInvested, totalCurrentValue, profitLoss, status);
     }
 
     // Get latest record for user
-    public ProfitAndLossResponseDTO getLatest(Long userId) {
-        return pnlRepo.findByUserId(userId)
-            .map(e -> new ProfitAndLossResponseDTO(
-                e.getUserId(),
-                null, // totalInvested, if not stored, left null
-                null, // totalCurrentValue, if not stored, left null
-                e.getTotalPortfolio(),
-                e.getPriceStatus()))
-            .orElse(null);
+    public ProfitAndLossResponse getLatest(Long userId) {
+        List<ProfitAndLoss> records = pnlRepo.findByUserId(userId);
+        if (records.isEmpty()) {
+            return null;
+        }
+        ProfitAndLoss latest = records.get(0);
+        return new ProfitAndLossResponse(
+            latest.getUserId(),
+            null,  // These would need to be stored if required
+            null, 
+            latest.getTotalPortfolio(),
+            latest.getPriceStatus()
+        );
     }
 }

@@ -7,4 +7,5 @@ import java.util.Optional;
 // Repository to access profit_and_loss table
 public interface ProfitAndLossRepository extends JpaRepository<ProfitAndLoss, Long> {
     Optional<ProfitAndLoss> findByUserId(Long userId);
+    List<ProfitAndLoss> findByUserId(Long userId);
 }
