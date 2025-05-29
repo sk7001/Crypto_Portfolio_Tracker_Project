@@ -1,5 +1,5 @@
-package com.cryptotracker.CryptoTrackerApplication.entity;
+package com.cryptotracker.entity;
 
 public enum AlertsStatus {
-	PENDING, TRIGGERED
+    PENDING, TRIGGERED
 }

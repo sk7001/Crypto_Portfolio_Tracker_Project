@@ -1,4 +1,4 @@
-package com.cryptotracker.CryptoTrackerApplication.entity;
+package com.cryptotracker.entity;
 
 public enum AlertsDirection {
 	Above, Below
