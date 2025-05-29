@@ -1,17 +1,12 @@
 package com.cryptotracker.CryptoTrackerApplication.repository;
 
-//import com.cryptotracker.CryptoTrackerApplication.dto.PortfolioLossAlertResponseDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.PortfolioLossAlert;
-
-//import java.util.Collection;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
+// Repository interface for PortfolioLossAlert entity
 public interface PortfolioLossAlertRepository extends JpaRepository<PortfolioLossAlert, Long> {
 
-	List<PortfolioLossAlert> findByUserId(Long userId);
-    // Add custom queries if needed
-	
-	
+    // Finds all alerts for a given user
+    List<PortfolioLossAlert> findByUserId(Long userId);
 }

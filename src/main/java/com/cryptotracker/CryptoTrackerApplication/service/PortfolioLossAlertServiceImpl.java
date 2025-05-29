@@ -1,7 +1,7 @@
 package com.cryptotracker.CryptoTrackerApplication.service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.cryptotracker.CryptoTrackerApplication.dto.PortfolioLossAlertRequestDTO;
 import com.cryptotracker.CryptoTrackerApplication.dto.PortfolioLossAlertResponseDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.PortfolioLossAlert;
@@ -12,21 +12,22 @@ import com.cryptotracker.CryptoTrackerApplication.repository.ProfitAndLossReposi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PortfolioLossAlertServiceImpl implements PortfolioLossAlertService {
-	private static final Logger logger = LoggerFactory.getLogger(AlertsServiceImpl.class);
+    // Tracks important system events and debugging info
+    private static final Logger logger = LoggerFactory.getLogger(PortfolioLossAlertServiceImpl.class);
 
     @Autowired
-    private PortfolioLossAlertRepository alertRepository;
+    private PortfolioLossAlertRepository alertRepository; // Manages alert database operations
 
     @Autowired
-    private ProfitAndLossRepository pnlRepository;
+    private ProfitAndLossRepository pnlRepository; // Handles profit/loss data access
 
+    // Creates new alert entry from user request
     @Override
     public PortfolioLossAlertResponseDTO createAlert(PortfolioLossAlertRequestDTO request) {
         PortfolioLossAlert alert = new PortfolioLossAlert();
@@ -38,6 +39,7 @@ public class PortfolioLossAlertServiceImpl implements PortfolioLossAlertService 
         return toDto(saved);
     }
 
+    // Gets all alerts for specific user, converts to response format
     @Override
     public List<PortfolioLossAlertResponseDTO> getAlertsByUserId(Long userId) {
         List<PortfolioLossAlert> alerts = alertRepository.findByUserId(userId);
@@ -48,6 +50,7 @@ public class PortfolioLossAlertServiceImpl implements PortfolioLossAlertService 
         return dtos;
     }
 
+    // Retrieves all alerts across all users
     @Override
     public List<PortfolioLossAlertResponseDTO> getAllAlerts() {
         List<PortfolioLossAlert> alerts = alertRepository.findAll();
@@ -58,6 +61,7 @@ public class PortfolioLossAlertServiceImpl implements PortfolioLossAlertService 
         return dtos;
     }
 
+    // Automated check running every 10 seconds for alert conditions
     @Override
     @Scheduled(fixedRate = 10000)
     public void evaluateAlertTrigger() {
@@ -66,22 +70,25 @@ public class PortfolioLossAlertServiceImpl implements PortfolioLossAlertService 
             if ("PENDING".equals(alert.getStatus())) {
                 List<ProfitAndLoss> pnlList = pnlRepository.findByUserId(alert.getUserId());
                 double userTotalLoss = 0.0;
-                logger.debug("Scheduling Started");
+                logger.debug("Starting alert evaluation cycle");
+                
                 for (ProfitAndLoss pnl : pnlList) {
                     if (pnl.getPriceStatus() == PriceStatus.LOSS && pnl.getTotalPortfolio() != null) {
                         userTotalLoss += Math.abs(pnl.getTotalPortfolio());
                     }
                 }
+                
                 if (userTotalLoss >= alert.getLossThresholdPercent()) {
                     alert.setStatus("TRIGGERED");
                     alert.setTriggeredAt(LocalDateTime.now());
                     alertRepository.save(alert);
                 }
-                logger.debug("Alerts Pending ");
+                logger.debug("Completed pending alerts check");
             }
         }
     }
 
+    // Converts internal alert format to client-friendly version
     private PortfolioLossAlertResponseDTO toDto(PortfolioLossAlert alert) {
         PortfolioLossAlertResponseDTO dto = new PortfolioLossAlertResponseDTO();
         dto.setId(alert.getId());
