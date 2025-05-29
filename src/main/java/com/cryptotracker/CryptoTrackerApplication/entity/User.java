@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @Pattern(regexp="^(?=.[a-z])(?=.[A-Z])(?=.\\d)(?=.[!@#$%^&*]).{8,}$",message="Give a strong and valid passsword ! ")
     private String password; 
 
     @Enumerated(EnumType.STRING)
