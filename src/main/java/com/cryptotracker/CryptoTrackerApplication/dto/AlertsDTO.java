@@ -1,6 +1,6 @@
-package com.cryptotracker.CryptoPortfolioTrackerApplication.dto;
+package com.cryptotracker.CryptoTrackerApplication.dto;
 
-import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.AlertsDirection;
+import com.cryptotracker.CryptoTrackerApplication.entity.AlertsDirection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

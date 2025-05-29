@@ -1,4 +1,4 @@
-package com.cryptotracker.CryptoPortfolioTrackerApplication.service;
+package com.cryptotracker.CryptoTrackerApplication.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,17 +8,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.CryptoPrice;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.User;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.repository.AlertsRepository;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.repository.CryptoPriceRepository;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.repository.UserRepository;
+import com.cryptotracker.CryptoTrackerApplication.entity.CryptoPrice;
+import com.cryptotracker.CryptoTrackerApplication.entity.User;
+import com.cryptotracker.CryptoTrackerApplication.repository.AlertsRepository;
+import com.cryptotracker.CryptoTrackerApplication.repository.CryptoPriceRepository;
+import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.dto.AlertsDTO;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.Alerts;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.AlertsDirection;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.AlertsStatus;
+import com.cryptotracker.CryptoTrackerApplication.dto.AlertsDTO;
+import com.cryptotracker.CryptoTrackerApplication.entity.Alerts;
+import com.cryptotracker.CryptoTrackerApplication.entity.AlertsDirection;
+import com.cryptotracker.CryptoTrackerApplication.entity.AlertsStatus;
 
 @Service
 public class AlertsServiceImpl implements AlertsService {
@@ -48,8 +48,9 @@ public class AlertsServiceImpl implements AlertsService {
     @Override
     public List<Alerts> getAlerts(Long userID) {
         // Fetches and returns all alerts for a specific user by userID.
-        logger.debug("Alerts count for userID {} : {}", userID, alertRepository.findByUserId(userID).size());
-        return alertRepository.findByUserId(userID);
+    	List<Alerts> userAlertList = alertRepository.findByUserId(userID);
+        logger.debug("Alerts count for userID {} : {}", userID, userAlertList.size());
+        return userAlertList;
     }
 
     @Scheduled(fixedRate = 60000)
@@ -117,8 +118,9 @@ public class AlertsServiceImpl implements AlertsService {
     @Override
     public List<Alerts> getAllAlerts() {
         // Returns a list of all alerts of all users.
-        logger.debug("All alerts count: {}", alertRepository.findAll().size());
-        return alertRepository.findAll();
+    	List<Alerts> alerts = alertRepository.findAll();
+        logger.debug("All alerts count: {}", alerts.size());
+        return alerts;
     }
     
     @Override

@@ -1,4 +1,4 @@
-package com.cryptotracker.CryptoPortfolioTrackerApplication.entity;
+package com.cryptotracker.CryptoTrackerApplication.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,10 +1,10 @@
-package com.cryptotracker.CryptoPortfolioTrackerApplication.controller;
+package com.cryptotracker.CryptoTrackerApplication.controller;
 
-import com.cryptotracker.CryptoPortfolioTrackerApplication.dto.AlertsDTO;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.Alerts;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.User;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.repository.UserRepository;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.service.AlertsService;
+import com.cryptotracker.CryptoTrackerApplication.dto.AlertsDTO;
+import com.cryptotracker.CryptoTrackerApplication.entity.Alerts;
+import com.cryptotracker.CryptoTrackerApplication.entity.User;
+import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
+import com.cryptotracker.CryptoTrackerApplication.service.AlertsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

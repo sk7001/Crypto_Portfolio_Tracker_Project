@@ -1,7 +1,7 @@
-package com.cryptotracker.CryptoPortfolioTrackerApplication.service;
+package com.cryptotracker.CryptoTrackerApplication.service;
 
-import com.cryptotracker.CryptoPortfolioTrackerApplication.dto.AlertsDTO;
-import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.Alerts;
+import com.cryptotracker.CryptoTrackerApplication.dto.AlertsDTO;
+import com.cryptotracker.CryptoTrackerApplication.entity.Alerts;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package com.cryptotracker.CryptoPortfolioTrackerApplication.repository;
+package com.cryptotracker.CryptoTrackerApplication.repository;
 
 
-import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.CryptoPrice;
+import com.cryptotracker.CryptoTrackerApplication.entity.CryptoPrice;
 
 import java.util.Optional;
 
