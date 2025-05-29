@@ -1,7 +1,7 @@
-package com.cryptotracker.repository;
+package com.cryptotracker.CryptoPortfolioTrackerApplication.repository;
 
-import com.cryptotracker.entity.Alerts;
-import com.cryptotracker.entity.AlertsStatus;
+import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.Alerts;
+import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.AlertsStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +11,7 @@ import java.util.List;
 public interface AlertsRepository extends JpaRepository<Alerts, Long> {
     List<Alerts> findByUserId(Long userId);
     List<Alerts> findByStatus(AlertsStatus status);
+	List<Alerts> findByUserIdAndStatus(Long userId, AlertsStatus pending);
 }
 
 

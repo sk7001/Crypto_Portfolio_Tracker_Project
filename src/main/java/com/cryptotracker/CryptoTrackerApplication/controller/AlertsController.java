@@ -1,8 +1,10 @@
-package com.cryptotracker.controller;
+package com.cryptotracker.CryptoPortfolioTrackerApplication.controller;
 
-import com.cryptotracker.dto.AlertsDTO;
-import com.cryptotracker.entity.Alerts;
-import com.cryptotracker.service.AlertsService;
+import com.cryptotracker.CryptoPortfolioTrackerApplication.dto.AlertsDTO;
+import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.Alerts;
+import com.cryptotracker.CryptoPortfolioTrackerApplication.entity.User;
+import com.cryptotracker.CryptoPortfolioTrackerApplication.repository.UserRepository;
+import com.cryptotracker.CryptoPortfolioTrackerApplication.service.AlertsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,10 @@ public class AlertsController {
     @Autowired
     private AlertsService alertsService;
 
-    @PostMapping("/")
+    @Autowired
+    private UserRepository userRepository; 
+    
+    @PostMapping("/createAlert")
     public ResponseEntity<Map<String, String>> saveNewAlert(@RequestBody AlertsDTO alertdto) {
         try {
             alertsService.addAlert(alertdto);
@@ -32,22 +37,40 @@ public class AlertsController {
                     .body(Map.of("error", "Unable to create alert: " + e.getMessage()));
         }
     }
+    // Created a post endpoint in which the user can add alert.
 
     @GetMapping("/getAlerts/{id}")
     public ResponseEntity<?> getAlerts(@PathVariable Long id) {
         try {
-            List<Alerts> alertsList = alertsService.getAlerts(id);
+        	User user = userRepository.findById(id).orElseThrow(()->new Exception("User not found"));
+            List<Alerts> alertsList = alertsService.getAlerts(user.getUser_id());
             return ResponseEntity.ok(alertsList);
         } catch (Exception e) {
-            logger.error("Error fetching alerts for user {}: ", id, e);
+            logger.error("Error fetching alerts for user {}: ", id);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Unable to get alerts for userID " + id));
         }
     }
+    // Created a get endpoint in which the user can get the list of all alerts by sending userID as params .
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Alerts>> getAllAlerts() {
         List<Alerts> alertsList = alertsService.getAllAlerts();
         return ResponseEntity.ok(alertsList);
     }
+    // Created a get endpoint in which the can get all his created alerts. 
+
+    @GetMapping("/getPending/{id}")
+    public ResponseEntity<?> getPendingAlerts(@PathVariable Long id){
+        List<Alerts> alertsList = alertsService.getPendingAlerts(id);
+        return ResponseEntity.ok(alertsList);
+    }
+    // Created a get endpoint in which the user can get the list of all the pending alerts.
+    
+    @GetMapping("/getTriggered/{id}")
+    public ResponseEntity<?> getTriggeredAlerts(@PathVariable Long id){
+        List<Alerts> alertsList = alertsService.getTriggeredAlerts(id);
+        return ResponseEntity.ok(alertsList);
+    }
+    // Created a get endpoint in which the user can get the list of all the triggered alerts.
 }
