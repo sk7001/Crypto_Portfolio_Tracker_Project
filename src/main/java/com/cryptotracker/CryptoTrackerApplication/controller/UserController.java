@@ -1,6 +1,8 @@
 package com.cryptotracker.CryptoTrackerApplication.controller;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +19,14 @@ import java.util.List;
 @RestController
 @RequestMapping("api/users")
 @Validated
+@Slf4j
+
 public class UserController {
     @Autowired
     private UserServiceImpl service;
     
-    //This method is for fetching all the users from the user database only if requesterEmail is admin 
-	//api/users
-    @GetMapping
+  //this method fetches all users from db
+    @GetMapping("/requesterEmail")
     public ResponseEntity<?> getAllUsers(@RequestParam String requesterEmail) {
         try {
             if (!service.isAdmin(requesterEmail)) {
@@ -32,8 +35,10 @@ public class UserController {
             }
 
             List<UserDTO> users = service.getAllUser();
+            log.info("Admin fetched all the users");
             return ResponseEntity.ok(users);
         } catch (Exception e) {
+        	log.error("Only Admin can get users");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error: " + e.getMessage());
         }
@@ -50,15 +55,14 @@ public class UserController {
     				      @Email(message="email should be valid") String requesterEmail){
         
     	if(service.updateUserRole(requesterEmail,id,role)) {
+    		log.info("User Role has been updated successfully");
     		 return ResponseEntity.ok("User role updated successfully");
     	}else {
+    		log.error("Invalid user id");
     		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Role update failed");
     	}       
-    }  
+    }      
     
-    
-    //Delete the user based on id and email
-    //api/users/delete/id/reqPerson?reqPerson=email
     @DeleteMapping("/delete/{id}/reqPerson")
     public ResponseEntity<String> deleteUser(
     		@PathVariable Long id,
@@ -66,6 +70,7 @@ public class UserController {
     	if(service.deleteUser(reqPerson,id)) {
     		return ResponseEntity.ok("User deleted successfully");
     	}else {
+    		log.error("User not found to delete");
     		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     	}
     }

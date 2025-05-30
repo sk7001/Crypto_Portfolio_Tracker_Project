@@ -23,6 +23,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="user_id")
     private Long userId;
 
     @Column(nullable = false)
@@ -32,7 +33,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    @Pattern(regexp="^(?=.[a-z])(?=.[A-Z])(?=.\\d)(?=.[!@#$%^&*]).{8,}$",message="Give a strong and valid passsword ! ")
+    @Pattern( regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$",message="Give a strong and valid passsword ! ")
     private String password; 
 
     @Enumerated(EnumType.STRING)
