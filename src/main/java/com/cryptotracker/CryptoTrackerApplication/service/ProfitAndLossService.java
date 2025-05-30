@@ -7,3 +7,8 @@ public interface ProfitAndLossService {
     ProfitAndLossResponseDTO getLatest(Long userId);
     void calculateAndPersistAll();
 }
+
+/*
+I define the contract for profit and loss operations in the service layer.
+I declare methods to calculate, persist, and fetch PnL results for users.
+*/

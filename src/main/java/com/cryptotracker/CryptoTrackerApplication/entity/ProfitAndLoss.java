@@ -17,10 +17,13 @@ public class ProfitAndLoss {
     // Foreign key to User
     private Long userId;
 
-    // Enum status (PROFIT, LOSS, NEUTRAL)
     @Enumerated(EnumType.STRING)
     private PriceStatus priceStatus;
 
-    // Store the total portfolio profit or loss value
     private Double totalPortfolio;
 }
+
+/*
+I represent the profit and loss record for each user in the database.
+I store the userId, PnL status, and total profit or loss, with JPA and Lombok handling persistence and boilerplate code.
+*/

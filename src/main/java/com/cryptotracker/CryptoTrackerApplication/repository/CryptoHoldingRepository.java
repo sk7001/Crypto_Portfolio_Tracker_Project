@@ -12,3 +12,4 @@ public interface CryptoHoldingRepository extends JpaRepository<CryptoHolding, Lo
     @Query("SELECT DISTINCT c.userId FROM CryptoHolding c")
     List<Long> findAllDistinctUserIds();
  }
+/* This is the Repository Interface Using JPA in order to use MySQL to store all the attributes through the DTO*/

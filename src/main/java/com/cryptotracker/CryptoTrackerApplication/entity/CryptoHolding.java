@@ -21,6 +21,7 @@ public class CryptoHolding {
     private Double buyPrice;
     private String buyDate;
 }
-
+/* Created Entity signifying the attributes used above to save those details in repository and give these through json request
+* Except the holding id since it is auto generated*/
 
 

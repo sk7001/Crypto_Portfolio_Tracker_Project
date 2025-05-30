@@ -42,7 +42,7 @@ public class PortfolioLossAlertServiceImpl implements PortfolioLossAlertService 
     // Gets all alerts for specific user, converts to response format
     @Override
     public List<PortfolioLossAlertResponseDTO> getAlertsByUserId(Long userId) {
-        List<PortfolioLossAlert> alerts = alertRepository.findByUserId(userId);
+        List<PortfolioLossAlert> alerts = alertRepository.findAllByUserId(userId);
         List<PortfolioLossAlertResponseDTO> dtos = new ArrayList<>();
         for (PortfolioLossAlert alert : alerts) {
             dtos.add(toDto(alert));
@@ -68,7 +68,7 @@ public class PortfolioLossAlertServiceImpl implements PortfolioLossAlertService 
         List<PortfolioLossAlert> alerts = alertRepository.findAll();
         for (PortfolioLossAlert alert : alerts) {
             if ("PENDING".equals(alert.getStatus())) {
-                List<ProfitAndLoss> pnlList = pnlRepository.findByUserId(alert.getUserId());
+                List<ProfitAndLoss> pnlList = pnlRepository.findAllByUserId(alert.getUserId());
                 double userTotalLoss = 0.0;
                 logger.debug("Starting alert evaluation cycle");
                 

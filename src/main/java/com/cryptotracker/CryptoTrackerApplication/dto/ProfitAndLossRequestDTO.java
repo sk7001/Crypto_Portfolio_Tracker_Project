@@ -9,3 +9,7 @@ import lombok.*;
 public class ProfitAndLossRequestDTO {
     private Long userId;
 }
+/*
+I represent the data needed when creating or updating a user's profit and loss record.
+I simply hold the userId, and Lombok generates my boilerplate code.
+*/

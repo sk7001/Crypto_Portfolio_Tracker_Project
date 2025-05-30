@@ -43,7 +43,7 @@ class PortfolioLossAlertServiceImplTest {
         testAlert.setUserId(100L);
         testAlert.setLossThresholdPercent(500.0);
         testAlert.setStatus("PENDING");
-        
+
         testRequest = new PortfolioLossAlertRequestDTO(100L, 500.0);
     }
 
@@ -62,18 +62,18 @@ class PortfolioLossAlertServiceImplTest {
 
     @Test
     void getAlertsByUserId_ExistingUser_ReturnsDTOList() {
-        when(alertRepository.findByUserId(100L)).thenReturn(Collections.singletonList(testAlert));
+        when(alertRepository.findAllByUserId(100L)).thenReturn(List.of(testAlert));
 
         List<PortfolioLossAlertResponseDTO> result = alertService.getAlertsByUserId(100L);
 
         assertEquals(1, result.size());
         assertEquals(100L, result.get(0).getUserId());
-        verify(alertRepository, times(1)).findByUserId(100L);
+        verify(alertRepository, times(1)).findAllByUserId(100L);
     }
 
     @Test
     void getAllAlerts_Always_ReturnsAllDTOs() {
-        when(alertRepository.findAll()).thenReturn(Collections.singletonList(testAlert));
+        when(alertRepository.findAll()).thenReturn(List.of(testAlert));
 
         List<PortfolioLossAlertResponseDTO> result = alertService.getAllAlerts();
 
@@ -83,7 +83,6 @@ class PortfolioLossAlertServiceImplTest {
 
     @Test
     void evaluateAlertTrigger_ThresholdMet_UpdatesAlertStatus() {
-        // Arrange
         PortfolioLossAlert pendingAlert = new PortfolioLossAlert();
         pendingAlert.setUserId(100L);
         pendingAlert.setLossThresholdPercent(500.0);
@@ -94,13 +93,11 @@ class PortfolioLossAlertServiceImplTest {
         pnl.setPriceStatus(PriceStatus.LOSS);
         pnl.setTotalPortfolio(-600.0);
 
-        when(alertRepository.findAll()).thenReturn(Collections.singletonList(pendingAlert));
-        when(pnlRepository.findByUserId(100L)).thenReturn(Collections.singletonList(pnl));
+        when(alertRepository.findAll()).thenReturn(List.of(pendingAlert));
+        when(pnlRepository.findAllByUserId(100L)).thenReturn(List.of(pnl));
 
-        // Act
         alertService.evaluateAlertTrigger();
 
-        // Assert
         assertEquals("TRIGGERED", pendingAlert.getStatus());
         assertNotNull(pendingAlert.getTriggeredAt());
         verify(alertRepository, times(1)).save(pendingAlert);
@@ -108,7 +105,6 @@ class PortfolioLossAlertServiceImplTest {
 
     @Test
     void evaluateAlertTrigger_ThresholdNotMet_NoStatusChange() {
-        // Arrange
         PortfolioLossAlert pendingAlert = new PortfolioLossAlert();
         pendingAlert.setUserId(100L);
         pendingAlert.setLossThresholdPercent(1000.0);
@@ -119,13 +115,11 @@ class PortfolioLossAlertServiceImplTest {
         pnl.setPriceStatus(PriceStatus.LOSS);
         pnl.setTotalPortfolio(-500.0);
 
-        when(alertRepository.findAll()).thenReturn(Collections.singletonList(pendingAlert));
-        when(pnlRepository.findByUserId(100L)).thenReturn(Collections.singletonList(pnl));
+        when(alertRepository.findAll()).thenReturn(List.of(pendingAlert));
+        when(pnlRepository.findAllByUserId(100L)).thenReturn(List.of(pnl));
 
-        // Act
         alertService.evaluateAlertTrigger();
 
-        // Assert
         assertEquals("PENDING", pendingAlert.getStatus());
         assertNull(pendingAlert.getTriggeredAt());
         verify(alertRepository, never()).save(any());
@@ -133,8 +127,8 @@ class PortfolioLossAlertServiceImplTest {
 
     @Test
     void evaluateAlertTrigger_NoProfitLossData_NoChanges() {
-        when(alertRepository.findAll()).thenReturn(Collections.singletonList(testAlert));
-        when(pnlRepository.findByUserId(100L)).thenReturn(Collections.emptyList());
+        when(alertRepository.findAll()).thenReturn(List.of(testAlert));
+        when(pnlRepository.findAllByUserId(100L)).thenReturn(Collections.emptyList());
 
         alertService.evaluateAlertTrigger();
 
@@ -142,3 +136,4 @@ class PortfolioLossAlertServiceImplTest {
         verify(alertRepository, never()).save(any());
     }
 }
+

@@ -49,3 +49,8 @@ public class CryptoHoldingController {
         return service.getAllCryptoHoldings();
     }
 }
+/* This is the Controller of my Module Crypto-Holding which deals the HTTP Requests and being categorized into 
+ * GET- For Fetching Assets of a user from Repository
+ * POST - For Posting the Assets Seen through CryptoPrice Simulation and then store this data in repository 
+ * PUT - This method is utilized that user has sold some of his asset so he updates his holding asset
+ * DELETE - Used this method to sell overall asset */
