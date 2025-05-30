@@ -5,7 +5,6 @@ import com.cryptotracker.CryptoTrackerApplication.dto.PortfolioLossAlertResponse
 import com.cryptotracker.CryptoTrackerApplication.service.PortfolioLossAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -13,27 +12,27 @@ import java.util.List;
 public class PortfolioLossAlertController {
 
     @Autowired
-    private PortfolioLossAlertService alertService;
+    private PortfolioLossAlertService alertService; // Handles business logic for alerts
 
-    // Create new alert
+    // Creates a new portfolio loss alert for a user
     @PostMapping
     public PortfolioLossAlertResponseDTO createAlert(@RequestBody PortfolioLossAlertRequestDTO request) {
         return alertService.createAlert(request);
     }
 
-    // Get alerts for specific user
+    // Retrieves all alerts for a specific user
     @GetMapping("/user/{userId}")
     public List<PortfolioLossAlertResponseDTO> getAlertsByUser(@PathVariable Long userId) {
         return alertService.getAlertsByUserId(userId);
     }
 
-    // Get all alerts (admin view)
+    // Retrieves all alerts in the system (admin view)
     @GetMapping
     public List<PortfolioLossAlertResponseDTO> getAllAlerts() {
         return alertService.getAllAlerts();
     }
 
-    // Manual trigger evaluation
+    // Triggers evaluation of all alerts (manual run)
     @PostMapping("/evaluate")
     public void evaluateAlerts() {
         alertService.evaluateAlertTrigger();

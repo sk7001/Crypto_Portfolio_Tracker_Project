@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,15 +15,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PortfolioLossAlert {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Unique identifier for each alert
 
-    private Long userId;
+    private Long userId; // User this alert is associated with
 
-    @Column(name = "loss_threshold_percent") // Match DB column name
-    private double lossThresholdPercent;
+    @Column(name = "loss_threshold_percent") // Maps to the correct DB column
+    private double lossThresholdPercent; // Threshold to trigger the alert
 
-    private String status = "PENDING";
-    private LocalDateTime triggeredAt;
+    private String status = "PENDING"; // Current status of the alert
+
+    private LocalDateTime triggeredAt; // When the alert was triggered
 }
