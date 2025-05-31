@@ -1,6 +1,5 @@
 package com.cryptotracker.CryptoTrackerApplication.test;
 
-
 import com.cryptotracker.CryptoTrackerApplication.dto.CryptoDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.CryptoHolding;
 import com.cryptotracker.CryptoTrackerApplication.entity.CryptoPrice;
@@ -10,7 +9,6 @@ import com.cryptotracker.CryptoTrackerApplication.exception.UserNotFoundExceptio
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoHoldingRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoPriceRepository;
 import com.cryptotracker.CryptoTrackerApplication.service.CryptoHoldingServiceImpl;
-
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,9 +42,9 @@ class CryptoHoldingServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        cryptoDTO = new CryptoDTO(null, 1L, "Bitcoin", "BTC", 2.5, "2023-10-10");
+        cryptoDTO = new CryptoDTO(1L, "BTC", 2.5);
         cryptoPrice = new CryptoPrice("BTC", 25000.0, LocalDateTime.now());
-        holding = new CryptoHolding(1L, 1L, "Bitcoin", "BTC", 2.5, 25000.0, "2023-10-10");
+        holding = new CryptoHolding(1L, 1L, "BTC", 2.5, 25000.0, LocalDateTime.now());
     }
 
     @Test
@@ -98,7 +96,7 @@ class CryptoHoldingServiceImplTest {
 
     @Test
     void testUpdateCryptoHolding_Success() {
-        CryptoDTO updateDTO = new CryptoDTO(null, 1L, "Bitcoin Updated", "BTC", 3.0, "2023-12-01");
+        CryptoDTO updateDTO = new CryptoDTO(1L, "BTC", 3.0);
 
         when(priceRepository.findBySymbol1("BTC")).thenReturn(cryptoPrice);
         when(repository.findById(1L)).thenReturn(Optional.of(holding));
@@ -106,13 +104,13 @@ class CryptoHoldingServiceImplTest {
 
         CryptoHolding updated = service.updateCryptoHolding(1L, updateDTO);
 
-        assertEquals("Bitcoin Updated", updated.getCoinName());
         assertEquals(3.0, updated.getQuantityHeld());
+        assertEquals("BTC", updated.getSymbol());
     }
 
     @Test
     void testUpdateCryptoHolding_PriceNotFound() {
-        CryptoDTO updateDTO = new CryptoDTO(null, 1L, "Bitcoin", "DOGE", 3.0, "2023-12-01");
+        CryptoDTO updateDTO = new CryptoDTO(1L, "DOGE", 3.0);
 
         when(priceRepository.findBySymbol1("DOGE")).thenReturn(null);
 
@@ -144,11 +142,3 @@ class CryptoHoldingServiceImplTest {
         assertTrue(thrown.getMessage().contains("Crypto holding not found"));
     }
 }
-
-/* Service Layer implementing the business logic in this the 
-* first method deals with posting the attributes into repository
-* and then second method gets assets based on User id
-* third method gets assets based on holding id
-* fourth method updates holding by passing object through dto signifying he sold some part of his asset
-* and fifth method deletes his asset signifying he sold his asset
-* also using of logger to log the operations*/
