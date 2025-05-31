@@ -59,7 +59,7 @@ public class UserController {
     		 return ResponseEntity.ok("User role updated successfully");
     	}else {
     		log.error("Invalid user id");
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Role update failed");
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" Role update failed Only Admin can update");
     	}       
     }      
     

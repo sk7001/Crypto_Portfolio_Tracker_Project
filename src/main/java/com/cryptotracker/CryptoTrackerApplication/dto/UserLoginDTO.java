@@ -21,7 +21,7 @@ public class UserLoginDTO {
     private String email;
 
     @NotBlank(message="Password cannot be blank")
-    @Pattern(regexp = "^(?=.[a-z])(?=.\\d)(?=.[!@#$%^&]).{8,}$",
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$",
     		message="Give a strong and valid passsword ! ")
     private String password;
 }
