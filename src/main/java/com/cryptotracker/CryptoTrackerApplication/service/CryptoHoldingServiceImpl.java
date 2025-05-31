@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -40,11 +41,10 @@ public class CryptoHoldingServiceImpl implements CryptoHoldingService {
         CryptoHolding holding = new CryptoHolding(
                 null,
                 dto.getUserId(),
-                dto.getCoinName(),
                 dto.getSymbol(),
                 dto.getQuantityHeld(),
                 cryptoPrice.getPrice(),
-                dto.getBuyDate()
+                LocalDateTime.now()
         );
 
         CryptoHolding saved = repository.save(holding);
@@ -86,11 +86,10 @@ public class CryptoHoldingServiceImpl implements CryptoHoldingService {
 
         CryptoHolding holding = getCryptoHoldingById(holdingId);
 
-        holding.setCoinName(dto.getCoinName());
         holding.setSymbol(dto.getSymbol());
         holding.setQuantityHeld(dto.getQuantityHeld());
         holding.setBuyPrice(cryptoPrice.getPrice());
-        holding.setBuyDate(dto.getBuyDate());
+        holding.setBuyDate(LocalDateTime.now());
 
         CryptoHolding updated = repository.save(holding);
         logger.info("Successfully updated crypto holding ID: {}", updated.getHoldingId());

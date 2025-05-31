@@ -8,7 +8,7 @@ import java.util.List;
 public interface AlertsService {
 	Alerts addAlert(AlertsDTO dto);
     List<Alerts> getAlerts(Long userID);
-    List<Alerts> getAllAlerts();
+    List<Alerts> getAllAlerts(Long userId);
     List<Alerts> getPendingAlerts(Long userId);
     List<Alerts> getTriggeredAlerts(Long userId);
 }

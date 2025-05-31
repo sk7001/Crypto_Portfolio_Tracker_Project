@@ -14,8 +14,7 @@ public interface AlertsRepository extends JpaRepository<Alerts, Long> {
     List<Alerts> findByUserId(Long userId);
     List<Alerts> findByStatus(AlertsStatus status);
 	List<Alerts> findByUserIdAndStatus(Long userId, AlertsStatus pending);
-	Optional<Alerts> findByUserIdAndSymbolAndTriggerPriceAndDirection(Long userId, String symbol, Double triggerPrice,
-			AlertsDirection direction);
+	Optional<Alerts> findByUserIdAndSymbolAndTriggerPriceAndDirection(Long userId, String symbol, Double triggerPrice, AlertsDirection direction);
 }
 
 

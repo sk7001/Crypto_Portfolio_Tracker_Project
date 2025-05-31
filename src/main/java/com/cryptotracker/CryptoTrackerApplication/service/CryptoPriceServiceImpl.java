@@ -21,10 +21,16 @@ public class CryptoPriceServiceImpl implements CryptoPriceService {
     private CryptoPriceRepository priceRepo;
 
     private static final Map<String, Double> basePrices = Map.of(
-        "BTC", 25000.0,
-        "ETH", 1800.0,
-        "DOGE", 0.07,
-        "SOL", 2345.0
+		"BTC", 103713.00,
+		"ETH", 2524.68,
+		"DOGE", 0.18899,
+		"SOL", 155.32,
+		"BNB", 654.10,
+		"ADA", 0.669045,
+		"XRP", 2.13,
+		"DOT", 3.99,
+		"AVAX", 20.20,
+		"SHIB", 0.00001254
     );
 
     @Scheduled(fixedRate = 60000)

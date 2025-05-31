@@ -25,12 +25,7 @@ public class UserAuthServiceImpl implements UserAuthServiceInterface{
 	private PasswordEncoderUtility passwordEncoder;
 	
 
-    // Constructor injection for both dependencies
-	/*
-	 * public UserAuthServiceImpl(UserRepository userRepo, PasswordEncoderUtility
-	 * passwordEncoder) { this.userRepo = userRepo; this.passwordEncoder =
-	 * passwordEncoder; }
-	 */
+    
 	   public UserAuthDTO registerUser(User user)
 	   {
 		if(userRepo.existsByEmail(user.getEmail())) {

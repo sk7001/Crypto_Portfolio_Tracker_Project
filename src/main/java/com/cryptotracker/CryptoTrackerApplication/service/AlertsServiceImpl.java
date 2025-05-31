@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.cryptotracker.CryptoTrackerApplication.entity.CryptoPrice;
+import com.cryptotracker.CryptoTrackerApplication.entity.Role;
 import com.cryptotracker.CryptoTrackerApplication.entity.User;
+import com.cryptotracker.CryptoTrackerApplication.exception.CryptoAssetNotFoundException;
 import com.cryptotracker.CryptoTrackerApplication.exception.DuplicateAlertException;
+import com.cryptotracker.CryptoTrackerApplication.exception.UserNotFoundException;
 import com.cryptotracker.CryptoTrackerApplication.repository.AlertsRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoPriceRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
@@ -43,14 +46,20 @@ public class AlertsServiceImpl implements AlertsService {
         // Creates a new alert using data from the DTO and saves it to the database.
     	try {
     	    Optional<Alerts> existingAlert = alertRepository.findByUserIdAndSymbolAndTriggerPriceAndDirection(dto.getUserId(), dto.getSymbol(), dto.getTriggerPrice(), dto.getDirection());
-    	    if (existingAlert.isPresent()) {
+    	    if(userRepository.findById(dto.getUserId()).isEmpty()) {
+    	    	throw new UserNotFoundException("User does't exist");
+    	    }
+    	    if(cryptoPriceRepository.findBySymbol(dto.getSymbol()).isEmpty()) {
+    	    	throw new CryptoAssetNotFoundException("No asset found with a name called " + dto.getSymbol());
+    	    }
+    	    if (existingAlert.isPresent() && existingAlert.get().getStatus().equals(AlertsStatus.PENDING)) {
     	        throw new DuplicateAlertException("Alert already exists");
     	    }
     	    Alerts alert = new Alerts(dto.getUserId(), dto.getSymbol(), dto.getTriggerPrice(), dto.getDirection());
-    	    logger.debug("Alert Created: {}", alert.getId());
+    	    logger.info("Alert Created: {}", alert.getId());
     	    return alertRepository.save(alert);
-    	} catch (DuplicateAlertException e) {
-    	    logger.debug("Error occurred: {}", e.getMessage());
+    	} catch (Exception e) {
+    	    logger.error("Error occurred while creating alert: {}", e.getMessage());
     	    throw e;
     	}
 
@@ -58,16 +67,26 @@ public class AlertsServiceImpl implements AlertsService {
     @Override
     public List<Alerts> getAlerts(Long userID) {
         // Fetches and returns all alerts for a specific user by userID.
-    	List<Alerts> userAlertList = alertRepository.findByUserId(userID);
-        logger.debug("Alerts count for userID {} : {}", userID, userAlertList.size());
-        return userAlertList;
+    	try {
+    		Optional<User> user = userRepository.findById(userID);
+    		if(user.isEmpty()) {
+    	    	throw new UserNotFoundException("User does't exist");
+    		}
+    		List<Alerts> userAlertList = alertRepository.findByUserId(userID);
+    		logger.debug("Alerts count for userID {} : {}", userID, userAlertList.size());
+            return userAlertList;
+    	}catch(Exception e) {
+    		logger.error("Error occured while: {}", e.getMessage());
+    		throw e;
+    	}
+
     }
 
     @Scheduled(fixedRate = 60000)
     @Transactional
     public void checkAlerts() {
         // This scheduled method runs every 60 seconds to check all pending alerts.
-        logger.debug("Scheduler started at {}", LocalDateTime.now());
+        logger.debug("Crypto Alert Scheduler started at {}", LocalDateTime.now());
         try {
             List<Alerts> alerts = alertRepository.findByStatus(AlertsStatus.PENDING);
             logger.debug("Found {} pending alerts", alerts.size());
@@ -102,7 +121,7 @@ public class AlertsServiceImpl implements AlertsService {
             // Log any errors that occur in the scheduler itself.
             logger.error("Error in checkAlerts scheduler: ", e);
         }
-        logger.debug("Scheduler completed at {}", LocalDateTime.now());
+        logger.debug("Crypto Alert Scheduler completed at {}", LocalDateTime.now());
     }
 
     private void updateTriggeredAlert(Alerts alert) {
@@ -119,31 +138,61 @@ public class AlertsServiceImpl implements AlertsService {
         if (user != null && user.getEmail() != null) {
             String email = user.getEmail();
             String subject = "Crypto Alert Triggered!";
-            String body = "Your alert for " + alert.getSymbol() + " at price " + alert.getTriggerPrice() + " has been triggered.";
+            String body = "Your alert for " + alert.getSymbol() + " for price " + alert.getStatus() + alert.getTriggerPrice() + " has been triggered.";
             emailService.sendEmail(email, subject, body);
             logger.debug("Email sent to user {} with userID {}", user.getName(), user.getUserId());
         }
     }
 
     @Override
-    public List<Alerts> getAllAlerts() {
-        // Returns a list of all alerts of all users.
-    	List<Alerts> alerts = alertRepository.findAll();
-        logger.debug("All alerts count: {}", alerts.size());
-        return alerts;
+    public List<Alerts> getAllAlerts(Long userId) {
+    	try {
+    		Optional<User> user = userRepository.findById(userId); 
+    		if(user.isEmpty()) {
+    			throw new UserNotFoundException("ADMIN not found");
+    		}
+    		if(!user.get().getRole().equals(Role.ADMIN)){
+    			throw new UserNotFoundException("Only ADMINS can access this endpoint");
+    		}
+   	     	// Returns a list of all alerts of all users.
+        	List<Alerts> alerts = alertRepository.findAll();
+            logger.debug("All alerts count: {}", alerts.size());
+            return alerts;
+    	}catch(Exception e) {
+    		logger.error("User {} trying to access the endpoint /getAllAlerts", userId );
+    		throw e;
+    	}
     }
     
     @Override
     public List<Alerts> getPendingAlerts(Long userId){
-        // Returns all alerts of the user that are still pending.
-        logger.debug("Pending alerts count: {} for userID : {}", alertRepository.findAll().size(), userId);
-        return alertRepository.findByUserIdAndStatus(userId, AlertsStatus.PENDING);
+       	try {
+    		Optional<User> user = userRepository.findById(userId);
+    		if(user.isEmpty()) {
+    	    	throw new UserNotFoundException("User does't exist");
+    		}
+    		// Returns all alerts of the user that are still pending.
+            logger.debug("Pending alerts count: {} for userID : {}", alertRepository.findAll().size(), userId);
+            return alertRepository.findByUserIdAndStatus(userId, AlertsStatus.PENDING);
+    	}catch(Exception e) {
+    		logger.error("Error occured: {}", e.getMessage());
+    		throw e;
+    	}
     }
 
     @Override
     public List<Alerts> getTriggeredAlerts(Long userId){
-        // Returns all alerts of the user that have been triggered.
-        logger.debug("Triggered alerts count: {} for userID : {}", alertRepository.findAll().size(), userId);
-        return alertRepository.findByUserIdAndStatus(userId, AlertsStatus.TRIGGERED);
+       	try {
+    		Optional<User> user = userRepository.findById(userId);
+    		if(user.isEmpty()) {
+    	    	throw new UserNotFoundException("User does't exist");
+    		}
+	        // Returns all alerts of the user that have been triggered.
+	        logger.debug("Triggered alerts count: {} for userID : {}", alertRepository.findAll().size(), userId);
+	        return alertRepository.findByUserIdAndStatus(userId, AlertsStatus.TRIGGERED);
+       	}catch(Exception e) {
+    		logger.error("Error occured: {}", e.getMessage());
+    		throw e;
+    	}
     }
 }
