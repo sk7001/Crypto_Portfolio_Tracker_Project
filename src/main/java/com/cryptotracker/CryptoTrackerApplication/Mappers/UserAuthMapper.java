@@ -7,23 +7,22 @@ import com.cryptotracker.CryptoTrackerApplication.entity.User;
 
 @Component
 public class UserAuthMapper {
-	
-	
-	 // Converts User entity to UserAuthDTO for authentication purposes
 	public UserAuthDTO userEntityToUserAuthDTO (User user) {
 		UserAuthDTO u = new UserAuthDTO();
+		u.setUserId(user.getUserId());
+		u.setName(user.getName());
 		u.setEmail(user.getEmail());
 		u.setPassword(user.getPassword());
+		u.setRole(user.getRole());
 		return u;	
 	}
-	
-	// Converts UserAuthDTO to User entity for authentication or business logic processing
-
-	public User userAuthDtoToEntity(UserAuthDTO udto) {
+	public User userAuthDtoToEntity(UserAuthDTO userDto) {
 		User user = new User();
-		user.setEmail(udto.getEmail());
-		user.setPassword(udto.getPassword());
+		user.setEmail(userDto.getEmail());
+		user.setName(userDto.getName());
+		user.setPassword(userDto.getPassword());
+		user.setRole(userDto.getRole());
+		user.setUserId(user.getUserId());
 		return user;
 	}
-
 }

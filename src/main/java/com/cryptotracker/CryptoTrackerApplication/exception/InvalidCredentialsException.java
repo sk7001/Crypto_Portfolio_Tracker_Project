@@ -5,3 +5,4 @@ public class InvalidCredentialsException extends RuntimeException {
         super(message);
     }
 }
+//This exception is used in UserAuthServiceImpl to handle incorrect passwords.

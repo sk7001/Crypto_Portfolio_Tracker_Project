@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserAuthDTO {
 	
-	@NotNull(message="user id cannot be null")
 	private Long userId;
 	
 	@NotNull(message="Give a user name. It shouldnt be empty !!!")

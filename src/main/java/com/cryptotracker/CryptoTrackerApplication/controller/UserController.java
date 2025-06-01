@@ -71,7 +71,7 @@ public class UserController {
     		return ResponseEntity.ok("User deleted successfully");
     	}else {
     		log.error("User not found to delete");
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid User ID found");
     	}
     }
     
