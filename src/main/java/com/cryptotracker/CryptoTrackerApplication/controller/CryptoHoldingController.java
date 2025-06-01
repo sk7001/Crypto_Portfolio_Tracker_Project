@@ -44,9 +44,9 @@ public class CryptoHoldingController {
         service.deleteCryptoHolding(holdingId);
         return "Deleted holding with id: " + holdingId;
     }
-    @GetMapping("/all")
-    public List<CryptoHolding> getAll() {
-        return service.getAllCryptoHoldings();
+    @GetMapping("/all/{userId}")
+    public List<CryptoHolding> getAllHoldings(@PathVariable Long userId) {
+        return service.getAllCryptoHoldings(userId);
     }
 }
 /* This is the Controller of my Module Crypto-Holding which deals the HTTP Requests and being categorized into 

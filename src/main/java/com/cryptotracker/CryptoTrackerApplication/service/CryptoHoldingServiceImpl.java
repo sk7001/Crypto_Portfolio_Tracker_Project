@@ -3,11 +3,14 @@ package com.cryptotracker.CryptoTrackerApplication.service;
 import com.cryptotracker.CryptoTrackerApplication.dto.CryptoDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.CryptoHolding;
 import com.cryptotracker.CryptoTrackerApplication.entity.CryptoPrice;
+import com.cryptotracker.CryptoTrackerApplication.entity.Role;
+import com.cryptotracker.CryptoTrackerApplication.entity.User;
 import com.cryptotracker.CryptoTrackerApplication.exception.CryptoAssetNotFoundException;
 import com.cryptotracker.CryptoTrackerApplication.exception.PriceFetchException;
 import com.cryptotracker.CryptoTrackerApplication.exception.UserNotFoundException;
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoHoldingRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoPriceRepository;
+import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +30,10 @@ public class CryptoHoldingServiceImpl implements CryptoHoldingService {
 
     @Autowired
     private CryptoHoldingRepository repository;
+
+    @Autowired
+    private UserRepository userRepository;
+
 
     @Override
     public CryptoHolding addCryptoHolding(CryptoDTO dto) {
@@ -97,10 +104,22 @@ public class CryptoHoldingServiceImpl implements CryptoHoldingService {
     }
 
     @Override
-    public List<CryptoHolding> getAllCryptoHoldings() {
-        logger.info("Fetching all crypto holdings from database");
-        return repository.findAll();
-    }
+	public List<CryptoHolding> getAllCryptoHoldings(Long userId) {
+		logger.info("Admin check before fetching all crypto holdings for user ID: {}", userId);
+
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+
+		if (Role.ADMIN!=user.getRole()) {
+			logger.warn("Unauthorized access attempt by user ID: {} with role: {}", userId, user.getRole());
+			throw new RuntimeException("Access denied: Only ADMIN users can access all holdings.");
+		}
+
+		logger.info("User ID: {} is ADMIN, proceeding to fetch all holdings", userId);
+		return repository.findAll();
+}
+
+
 
     @Override
     public void deleteCryptoHolding(Long holdingId) {

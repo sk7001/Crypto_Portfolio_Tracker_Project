@@ -13,7 +13,7 @@ public interface CryptoHoldingService {
     CryptoHolding getCryptoHoldingById(Long holdingId);
     CryptoHolding updateCryptoHolding(Long holdingId, CryptoDTO dto);
     void deleteCryptoHolding(Long holdingId);
-    List<CryptoHolding> getAllCryptoHoldings();
+    List<CryptoHolding> getAllCryptoHoldings(Long userId);
 
 }
 
