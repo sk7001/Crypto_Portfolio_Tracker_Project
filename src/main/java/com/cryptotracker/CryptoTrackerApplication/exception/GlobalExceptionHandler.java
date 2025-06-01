@@ -40,6 +40,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleGeneric(Exception ex) {
         return buildErrorResponse("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<?> handleInvalidCredentials(InvalidCredentialsException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(String message, HttpStatus status) {
         Map<String, Object> error = new HashMap<>();
