@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDTO {
 	
-	@NotNull(message="user id cannot be null")
 	private Long userId;
 	
 	@NotNull(message="Name cannot be null")

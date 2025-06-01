@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserServiceInterface {
     
     public boolean isAdmin(String email) {
 	    User reqUser = userRepository.findByEmail(email)
-	                          .orElseThrow(() -> new RuntimeException("User not found"));
+	                          .orElseThrow(() -> new UserNotFoundException("User not found with email: "+email));
 	    return reqUser.getRole() == Role.ADMIN;
 	}
  
@@ -42,11 +42,11 @@ public class UserServiceImpl implements UserServiceInterface {
 	//This method finds the user by userId, if found checks if the role is Admin,if Admin ,then updates the user role and if user is not Admin ,then the method throws exceptions
 	 public boolean updateUserRole(String reqPersonMail,Long userId, String role){
 	    	try {
-	        User u=userRepository.findByEmail(reqPersonMail).orElseThrow();
-	        User user = userRepository.findById(userId).orElseThrow();
+	        User u=userRepository.findByEmail(reqPersonMail).orElseThrow(() -> new UserNotFoundException("User not found with email: "+reqPersonMail));
+	        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with ID: "+userId));
 	        if(u.getRole() == Role.ADMIN) {
 	        	user.setRole(Role.valueOf(role.toUpperCase()));
-	            userRepository.save(u);
+	            userRepository.save(user);
 	            log.info("User updated successfully");
 	            return true;
 	        }
@@ -60,8 +60,7 @@ public class UserServiceImpl implements UserServiceInterface {
     //Deletes the user only when the role is Admin 
 
     	 public boolean deleteUser(String reqPersonMail,Long userid) {
-     		User u=userRepository.findByEmail(reqPersonMail).orElseThrow(
-     				()-> new RuntimeException("Admin with mail : " + reqPersonMail + " doesnt exist !")
+     		User u=userRepository.findByEmail(reqPersonMail).orElseThrow(() -> new UserNotFoundException("Admin with mail : " + reqPersonMail + " doesnt exist !")
      				);
      		if(u.getRole()!=Role.ADMIN)
      			System.out.println("Only Admin can delete the user!");
