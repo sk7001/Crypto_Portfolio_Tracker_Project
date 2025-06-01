@@ -45,6 +45,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleInvalidCredentials(InvalidCredentialsException ex) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
+    
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<?> handleInvalidInput(InvalidInputException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoProfitLossDataException.class)
+    public ResponseEntity<?> handleNoProfitLossData(NoProfitLossDataException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(NoHoldingsFoundException.class)
+    public ResponseEntity<?> handleNoHoldings(NoHoldingsFoundException ex) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(String message, HttpStatus status) {
         Map<String, Object> error = new HashMap<>();

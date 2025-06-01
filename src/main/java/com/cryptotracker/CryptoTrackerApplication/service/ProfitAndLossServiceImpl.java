@@ -1,6 +1,9 @@
 package com.cryptotracker.CryptoTrackerApplication.service;
 
 import com.cryptotracker.CryptoTrackerApplication.entity.*;
+import com.cryptotracker.CryptoTrackerApplication.exception.CryptoAssetNotFoundException;
+import com.cryptotracker.CryptoTrackerApplication.exception.NoHoldingsFoundException;
+import com.cryptotracker.CryptoTrackerApplication.exception.NoProfitLossDataException;
 import com.cryptotracker.CryptoTrackerApplication.repository.*;
 import com.cryptotracker.CryptoTrackerApplication.dto.ProfitAndLossResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,7 @@ public class ProfitAndLossServiceImpl implements ProfitAndLossService {
         List<CryptoHolding> holdings = holdingRepo.findByUserId(userId);
         if (holdings.isEmpty()) {
             logger.warn("No holdings found for userId: {}", userId);
+            throw new NoHoldingsFoundException("No holdings found for userId: " + userId);
         }
 
         double totalInvested = 0.0;
@@ -65,7 +69,7 @@ public class ProfitAndLossServiceImpl implements ProfitAndLossService {
 
             double currentPrice = priceRepo.findById(symbol)
                     .map(CryptoPrice::getPrice)
-                    .orElse(0.0);
+                    .orElseThrow(() -> new CryptoAssetNotFoundException("Price not found for symbol: " + symbol));
 
             totalCurrentValue += qty * currentPrice;
 
@@ -106,9 +110,9 @@ public class ProfitAndLossServiceImpl implements ProfitAndLossService {
                     e.getTotalPortfolio(),
                     e.getPriceStatus());
             })
-            .orElseGet(() -> {
+            .orElseThrow(() -> {
                 logger.warn("No PnL record found for userId: {}", userId);
-                return null;
+                return new NoProfitLossDataException("No profit/loss data available for user ID: " + userId);
             });
     }
 }

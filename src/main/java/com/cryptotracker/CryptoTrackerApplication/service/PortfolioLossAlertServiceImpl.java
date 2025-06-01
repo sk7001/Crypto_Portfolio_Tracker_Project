@@ -7,6 +7,8 @@ import com.cryptotracker.CryptoTrackerApplication.dto.PortfolioLossAlertResponse
 import com.cryptotracker.CryptoTrackerApplication.entity.PortfolioLossAlert;
 import com.cryptotracker.CryptoTrackerApplication.entity.PriceStatus;
 import com.cryptotracker.CryptoTrackerApplication.entity.ProfitAndLoss;
+import com.cryptotracker.CryptoTrackerApplication.exception.InvalidInputException;
+import com.cryptotracker.CryptoTrackerApplication.exception.NoProfitLossDataException;
 import com.cryptotracker.CryptoTrackerApplication.repository.PortfolioLossAlertRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.ProfitAndLossRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +32,19 @@ public class PortfolioLossAlertServiceImpl implements PortfolioLossAlertService 
     // Creates new alert entry from user request
     @Override
     public PortfolioLossAlertResponseDTO createAlert(PortfolioLossAlertRequestDTO request) {
+        if (request.getUserId() == null) {
+            throw new InvalidInputException("User ID must not be null.");
+        }
+        if (request.getLossThresholdPercent() <= 0) {
+            throw new InvalidInputException("Loss threshold must be greater than 0.");
+        }
+
         PortfolioLossAlert alert = new PortfolioLossAlert();
         alert.setUserId(request.getUserId());
         alert.setLossThresholdPercent(request.getLossThresholdPercent());
         alert.setStatus("PENDING");
         alert.setTriggeredAt(null);
+
         PortfolioLossAlert saved = alertRepository.save(alert);
         return toDto(saved);
     }
@@ -69,6 +79,9 @@ public class PortfolioLossAlertServiceImpl implements PortfolioLossAlertService 
         for (PortfolioLossAlert alert : alerts) {
             if ("PENDING".equals(alert.getStatus())) {
                 List<ProfitAndLoss> pnlList = pnlRepository.findAllByUserId(alert.getUserId());
+                if (pnlList.isEmpty()) {
+                    throw new NoProfitLossDataException("No profit/loss records found for user ID: "+alert.getUserId());
+                }
                 double userTotalLoss = 0.0;
                 logger.debug("Starting alert evaluation cycle");
                 
