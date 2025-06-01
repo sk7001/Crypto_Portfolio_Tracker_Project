@@ -3,11 +3,14 @@ package com.cryptotracker.CryptoTrackerApplication.test;
 import com.cryptotracker.CryptoTrackerApplication.dto.CryptoDTO;
 import com.cryptotracker.CryptoTrackerApplication.entity.CryptoHolding;
 import com.cryptotracker.CryptoTrackerApplication.entity.CryptoPrice;
+import com.cryptotracker.CryptoTrackerApplication.entity.Role;
+import com.cryptotracker.CryptoTrackerApplication.entity.User;
 import com.cryptotracker.CryptoTrackerApplication.exception.CryptoAssetNotFoundException;
 import com.cryptotracker.CryptoTrackerApplication.exception.PriceFetchException;
 import com.cryptotracker.CryptoTrackerApplication.exception.UserNotFoundException;
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoHoldingRepository;
 import com.cryptotracker.CryptoTrackerApplication.repository.CryptoPriceRepository;
+import com.cryptotracker.CryptoTrackerApplication.repository.UserRepository;
 import com.cryptotracker.CryptoTrackerApplication.service.CryptoHoldingServiceImpl;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +35,9 @@ class CryptoHoldingServiceImplTest {
 
     @Mock
     private CryptoHoldingRepository repository;
+    
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private CryptoHoldingServiceImpl service;
@@ -118,13 +124,27 @@ class CryptoHoldingServiceImplTest {
     }
 
     @Test
-    void testGetAllCryptoHoldings() {
+    void testGetAllCryptoHoldings_AdminUser() {
+        Long adminUserId = 1L;
+
+        // Mock User with ADMIN role
+        User adminUser = new User();
+        adminUser.setUserId(adminUserId);
+        adminUser.setRole(Role.ADMIN);
+
+        // Mock the repository responses
+        when(userRepository.findById(adminUserId)).thenReturn(Optional.of(adminUser));
         when(repository.findAll()).thenReturn(List.of(holding));
 
-        List<CryptoHolding> all = service.getAllCryptoHoldings();
+        // Call service method
+        List<CryptoHolding> all = service.getAllCryptoHoldings(adminUserId);
 
+        // Assertions
         assertEquals(1, all.size());
+        verify(userRepository).findById(adminUserId);
+        verify(repository).findAll();
     }
+
 
     @Test
     void testDeleteCryptoHolding_Success() {
