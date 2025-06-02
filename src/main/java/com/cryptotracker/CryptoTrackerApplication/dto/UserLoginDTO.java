@@ -19,7 +19,6 @@ public class UserLoginDTO {
     @Email(message = "Invalid email format ! Please enter a valid email")
     @NotNull(message="Email shouldn't be null ! ")
     private String email;
-
     @NotBlank(message="Password cannot be blank")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,}$",
     		message="Give a strong and valid passsword ! ")
