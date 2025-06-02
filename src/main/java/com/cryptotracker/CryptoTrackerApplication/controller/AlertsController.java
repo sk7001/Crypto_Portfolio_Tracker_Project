@@ -54,8 +54,8 @@ public class AlertsController {
     // Created a get endpoint in which the user can get the list of all alerts by sending userID as params .
 
     @GetMapping("/getAll/{id}")
-    public ResponseEntity<List<Alerts>> getAllAlerts(@PathVariable Long Id) {
-        List<Alerts> alertsList = alertsService.getAllAlerts(Id);
+    public ResponseEntity<?> getAllAlerts(@PathVariable Long id) {
+        List<Alerts> alertsList = alertsService.getAllAlerts(id);
         return ResponseEntity.ok(alertsList);
     }
     // Created a get endpoint in which the can get all his created alerts. 
