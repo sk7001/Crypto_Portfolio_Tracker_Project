@@ -127,10 +127,10 @@ Build a secure and efficient platform that enables users to:
 See [GitHub contributors list](../../contributors) for full details.
 
 - [Swetha](https://github.com/SwethaJayasankar) – User Register and Login 
-- [Surya](https://github.com/KillerVardhan8) – Crypto Holdings  
+- [Surya Vardhan (Team Lead)](https://github.com/KillerVardhan8) – Crypto Holdings  
 - [Abhinaya](https://github.com/Konduru12) – Crypto Price Simulation  
 - [Shahid](https://github.com/Ss0556) – Crypto Profit and Loss  
-- [Shobit](https://github.com/sk7001) – Crypto Price Alerts  
+- [Shobhit](https://github.com/sk7001) – Crypto Price Alerts  
 - [KumarVardhan](https://github.com/kumarvardhan-0) – Crypto Portfolio Loss  
 - [Sukesh](https://github.com/Sukesh03) – Global Exceptions  
 
