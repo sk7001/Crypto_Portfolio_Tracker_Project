@@ -1,19 +1,30 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+"use client"
+import React from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-export function Signupform({
-  className,
-  ...props
-}) {
+export function Signupform({ className, ...props }) {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const confirmpassword = formData.get("confirmpassword");
+
+    console.log({ name, email, password, confirmpassword });
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -24,11 +35,11 @@ export function Signupform({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" type="name" name="name" required />
+                <Input id="name" type="text" name="name" required />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -44,23 +55,29 @@ export function Signupform({
                 <div className="flex items-center">
                   <Label htmlFor="confirmpassword">Confirm Password</Label>
                 </div>
-                <Input id="confirmpassword" type="password" name="confirmpassword" required />
+                <Input
+                  id="confirmpassword"
+                  type="password"
+                  name="confirmpassword"
+                  required
+                />
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
-                  Login
+                  Sign Up
                 </Button>
                 <Button variant="outline" className="w-full">
-                  Login with Google
+                  Sign up with Google
                 </Button>
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
               <a
                 href="/forgotpassword"
-                className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
+                className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+              >
                 Forgot your password?
-              </a> 
+              </a>
             </div>
             <div className="mt-4 text-center text-sm">
               Have an account?{" "}
